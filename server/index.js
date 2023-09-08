@@ -20,6 +20,10 @@ app.use('/api', router);
 // обработка ошибок последний Middleware
 app.use(errorHandler)
 
+app.get('/', (req, res) => {
+    res.status(200).json({message: 'WORKING'})
+})
+
 const start = async () => {
     try {
         await sequelize.authenticate() // подключение к базе данных перед запуском сервера
