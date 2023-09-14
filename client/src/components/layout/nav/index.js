@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
-import clsx from 'clsx';
+import clsx from "clsx";
 import Link from "next/link"
 
 import Hamburger from "@/src/modules/common/components/hamburger";
@@ -16,10 +16,6 @@ const Nav = () => {
     const [open, setOpen] = useState(false)
     const openMobileMenu = () => setOpen(true)
     const closeMobileMenu = () => setOpen(false)
-
-    useEffect(() => {
-        console.log(open);
-    }, [open])
 
     //useEffect that detects if window is scrolled > 5px on the Y axis
     useEffect(() => {
