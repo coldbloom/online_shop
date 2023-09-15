@@ -7,6 +7,7 @@ import Link from "next/link"
 
 import Hamburger from "@/src/modules/common/components/hamburger";
 import MobileMenu from "@/src/components/mobileMenu/MobileMenu";
+import MobileWrapper from "@/src/components/mobileMenu/MobileWrapper";
 
 const Nav = () => {
     const pathname = usePathname()
@@ -78,7 +79,7 @@ const Nav = () => {
                         </Link>
                     </div>
                 </nav>
-                <MobileMenu isOpen={open} close={closeMobileMenu}/>
+                <MobileWrapper isOpen={open} close={closeMobileMenu}/>
             </header>
         </div>
     );

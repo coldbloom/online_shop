@@ -11,12 +11,14 @@
     height: 100vh;
     background-color: #f8f8f8;
     z-index: 10;
-    transition: left 1s;
+    /*transition: left 1s;*/
+    /*transition: .3s;*/
+    transition: opacity 0.3s ease-in-out 0s;
     overflow: hidden;
 
-    transition-property: all;
-    transition-timing-function: ease;
-    transition-duration: 2s;
+    /*transition-property: all;*/
+    /*transition-timing-function: ease;*/
+    /*transition-duration: 2s;*/
 }
 
 .menu.active {
