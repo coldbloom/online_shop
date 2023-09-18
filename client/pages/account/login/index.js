@@ -1,10 +1,11 @@
 import React from 'react';
 import MainLayout from "@/src/components/layout";
+import Login from "@/src/components/login-template/login/Login";
 
 const Index = () => {
     return (
-        <div>
-            <h1>LOGIN</h1>
+        <div className='w-full flex justify-center py-24'>
+            <Login />
         </div>
     );
 };
