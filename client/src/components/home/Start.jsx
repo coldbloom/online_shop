@@ -33,7 +33,7 @@ const Start = () => {
             </div>
 
             <div className='w-12 bg-black text-white'>
-                <p>123</p>
+                <p className='text-2xl bg-amber-900 rounded-2xl'>123</p>
                 <p>123</p>
                 <p>123</p>
                 <p>123</p>
