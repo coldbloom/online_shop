@@ -4,6 +4,6 @@ const router = new Router()
 router.post('/',)
 router.get('/',)
 router.get('/:id',)
-router.delete('/',)
+router.delete('/:id',)
 
 module.exports = router

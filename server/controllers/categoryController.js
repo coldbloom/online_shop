@@ -13,7 +13,16 @@ class CategoryController {
     }
 
     async delete(req, res) {
+        console.log(req.params)
+        const { id } = req.params;
+        const category = await Category.findByPk(id);
 
+        if (!category) {
+            return res.status(401).json({ error: 'Category not found 11111' });
+        }
+
+        await category.destroy();
+        return res.json({ message: 'Category deleted successfully' });
     }
 }
 
