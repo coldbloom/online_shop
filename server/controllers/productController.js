@@ -22,8 +22,20 @@ class ProductController {
     async getOne(req, res) {
 
     }
-    async delete(req, res) {
+    async delete(req, res, next) {
+        try {
+            const {id} = req.params;
+            const product = await Product.findByPk(id)
 
+            if (!product) {
+                return res.status(401).json({ error: 'Product not found' });
+            }
+
+            await product.destroy()
+            return res.json({ message: 'Product deleted successfully'})
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
     }
 }
 

@@ -16,10 +16,9 @@ const CategoryModal = () => {
 
     const deleteCategory = (categoryId) => {
         axios.delete(`${process.env.SERVER_URL}/category/${categoryId}`)
-            .then(res => {
-                console.log(res)
+            .then(res =>
                 setCategories(categories.filter(item => item.id !== categoryId))
-            })
+            )
             .catch(error => console.log(error))
     }
 
@@ -41,15 +40,20 @@ const CategoryModal = () => {
             <button onClick={() => addNewCategory()}>Создать</button>
 
             <h3>Список всех категорий</h3>
-            {categories.map((category, id) =>
-                <div
-                    key={id}
-                    className='flex flex-row justify-between px-6'
-                >
-                    <p>{category.name}</p>
-                    <button onClick={() => deleteCategory(category.id)}>delete</button>
-                </div>
-            )}
+            <div className=''>
+                <ul>
+                    {categories.map((category, idx) =>
+                        <li
+                            key={idx}
+                            className='flex flex-row justify-between px-6'
+                        >
+                            <p>{`${idx}) ${category.name}`}</p>
+                            <button onClick={() => deleteCategory(category.id)}>delete</button>
+                        </li>
+                    )}
+
+                </ul>
+            </div>
         </div>
     );
 };

@@ -4,6 +4,7 @@ import axios from 'axios'
 const ProductModal = () => {
     const [categories, setCategories] = React.useState([])
     const [selectedItem, setSelectedItem] = React.useState('')
+    const [products, setProducts] = React.useState([])
 
     const [name, setName] = React.useState('')
     const [price, setPrice] = React.useState('')
@@ -14,12 +15,37 @@ const ProductModal = () => {
             .catch(error => console.log(error))
     }, [])
 
-    const addNewProduct = () => {
+    React.useEffect(() => {
+        axios.get(`${process.env.SERVER_URL}/product`)
+            .then(res => {
+                setProducts(res.data)
+                console.log(res.data)
+            })
+            .catch(error => console.log(error))
+    }, [])
 
+    const addNewProduct = () => {
+        axios.post(`${process.env.SERVER_URL}/product`, {name: name, price: price, categoryId: selectedItem})
+            .then(res => setProducts([...products, res.data]))
+            .catch(error => console.log(error))
     }
 
+    const deleteProduct = (productId) => {
+        console.log(productId)
+        axios.delete(`${process.env.SERVER_URL}/product/${productId}`)
+            .then(res => {
+                setProducts(products.filter(item => item.id !== productId))
+                console.log(products, 'after delete')
+            })
+            .catch(error => console.log(error))
+    }
+
+    React.useEffect(() => {
+        console.log(selectedItem, 'effect')
+    }, [ selectedItem])
+
     return (
-        <div>
+        <div className='border flex flex-col'>
             <h3>Создание карточки товара</h3>
             <div className='flex flex-row'>
                 <p>Выберите категорию для товара:</p>
@@ -54,6 +80,26 @@ const ProductModal = () => {
             >
                 Добавить товар
             </button>
+
+            <h3>Список всех товаров</h3>
+            <ul>
+                {products.map((product, idx) =>
+                    <li
+                        key={idx}
+                        className='flex flex-row justify-center px-6 items-center'
+                        style={{display: 'grid', gridTemplateColumns: '1fr 7fr 2fr'}}
+                    >
+                        <p>{idx})</p>
+                        <div>
+                            <p>{`наименование: ${product.name}`}</p>
+                            <p>{`категория: ${findCategory(product.categoryId)}`}</p>
+                            <p>{`цена: ${product.price}`}</p>
+                            {console.log(product.categoryId)}
+                        </div>
+                        <button onClick={() => deleteProduct(product.id)}>delete</button>
+                    </li>
+                )}
+            </ul>
         </div>
     );
 };
