@@ -40,9 +40,10 @@ const ProductModal = () => {
             .catch(error => console.log(error))
     }
 
-    React.useEffect(() => {
-        console.log(selectedItem, 'effect')
-    }, [ selectedItem])
+    const findCategory = (id) => {
+        const item = categories.find(item => item.id === id)
+        return item.name
+    }
 
     return (
         <div className='border flex flex-col'>
