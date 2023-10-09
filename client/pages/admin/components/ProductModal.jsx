@@ -9,6 +9,17 @@ const ProductModal = () => {
     const [name, setName] = React.useState('')
     const [price, setPrice] = React.useState('')
 
+    const [img, setImg] = React.useState(null)
+
+    const sendFile = React.useCallback(async () => {
+        try {
+            const data = new FormData()
+            data.append('photo', img)
+        } catch (error) {
+            console.log(error)
+        }
+    }, [img])
+
     React.useEffect(() => {
         axios.get(`${process.env.SERVER_URL}/category`)
             .then(res => setCategories(res.data))
@@ -44,6 +55,10 @@ const ProductModal = () => {
         const item = categories.find(item => item.id === id)
         return item.name
     }
+
+    React.useEffect(() => {
+        console.log(selectedItem, 'selectedItem')
+    }, [selectedItem])
 
     return (
         <div className='border flex flex-col'>
@@ -88,7 +103,7 @@ const ProductModal = () => {
                     <li
                         key={idx}
                         className='flex flex-row justify-center px-6 items-center'
-                        style={{display: 'grid', gridTemplateColumns: '1fr 7fr 2fr'}}
+                        style={{display: 'grid', gridTemplateColumns: '1fr 4fr 3fr 2fr'}}
                     >
                         <p>{idx})</p>
                         <div>
@@ -96,6 +111,10 @@ const ProductModal = () => {
                             <p>{`категория: ${findCategory(product.categoryId)}`}</p>
                             <p>{`цена: ${product.price}`}</p>
                             {console.log(product.categoryId)}
+                        </div>
+                        <div>
+                            <input type="file" onChange={e => setImg(e.target.files[0])}/>
+                            <button onClick={sendFile}>Добавить изображение</button>
                         </div>
                         <button onClick={() => deleteProduct(product.id)}>delete</button>
                     </li>

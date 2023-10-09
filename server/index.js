@@ -7,7 +7,7 @@ const models = require('./models/models')
 const router = require('./routes/index') // импорт основного маршрута
 
 
-const Port = process.env.PORT || 3031;
+const PORT = process.env.PORT || 3031;
 const app = express();
 
 app.use(cors());
@@ -25,7 +25,7 @@ const start = async () => {
     try {
         await sequelize.authenticate()
         await sequelize.sync()
-        app.listen(Port, () => console.log(`Server is started on the port ${Port}`));
+        app.listen(PORT, () => console.log(`Server is started on the port ${PORT}`));
     } catch (e) {
         console.log(e);
     }
