@@ -11,10 +11,16 @@ const ProductModal = () => {
 
     const [img, setImg] = React.useState(null)
 
-    const sendFile = React.useCallback(async () => {
+    const sendFile = React.useCallback(async (productId) => {
         try {
             const data = new FormData()
-            data.append('photo', img)
+            data.append('image', img)
+
+            await axios.post(`${process.env.SERVER_URL}/product/${productId}/uploadImage`, data, {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            })
         } catch (error) {
             console.log(error)
         }
@@ -34,6 +40,10 @@ const ProductModal = () => {
             })
             .catch(error => console.log(error))
     }, [])
+
+    React.useEffect(() => {
+        axios.get(`${process.env.SERVER_URL}/product`)
+    })
 
     const addNewProduct = () => {
         axios.post(`${process.env.SERVER_URL}/product`, {name: name, price: price, categoryId: selectedItem})
@@ -57,7 +67,7 @@ const ProductModal = () => {
     }
 
     React.useEffect(() => {
-        console.log(selectedItem, 'selectedItem')
+
     }, [selectedItem])
 
     return (
@@ -74,7 +84,7 @@ const ProductModal = () => {
                             key={category.id}
                             value={category.id}
                         >
-                            {category.name}
+                            {category?.name}
                         </option>)}
                 </select>
             </div>
@@ -103,7 +113,7 @@ const ProductModal = () => {
                     <li
                         key={idx}
                         className='flex flex-row justify-center px-6 items-center'
-                        style={{display: 'grid', gridTemplateColumns: '1fr 4fr 3fr 2fr'}}
+                        style={{display: 'grid', gridTemplateColumns: '1fr 3fr 3fr 4fr 1fr'}}
                     >
                         <p>{idx})</p>
                         <div>
@@ -114,7 +124,10 @@ const ProductModal = () => {
                         </div>
                         <div>
                             <input type="file" onChange={e => setImg(e.target.files[0])}/>
-                            <button onClick={sendFile}>Добавить изображение</button>
+                            <button onClick={() => sendFile(product.id)}>Добавить изображение</button>
+                        </div>
+                        <div>
+
                         </div>
                         <button onClick={() => deleteProduct(product.id)}>delete</button>
                     </li>

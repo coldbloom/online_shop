@@ -47,7 +47,7 @@ const CategoryModal = () => {
                             key={idx}
                             className='flex flex-row justify-between px-6'
                         >
-                            <p>{`${idx}) ${category.name}`}</p>
+                            <p>{`${idx}) ${category?.name}`}</p>
                             <button onClick={() => deleteCategory(category.id)}>delete</button>
                         </li>
                     )}

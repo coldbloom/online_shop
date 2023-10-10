@@ -10,9 +10,13 @@ const router = require('./routes/index') // импорт основного ма
 const PORT = process.env.PORT || 3031;
 const app = express();
 
+//для commit 222
+// Установка папки 'public' в качестве статической директории
+app.use(express.static('media'));
+
 app.use(cors());
 
-app.use(express.json());  // для того чтобы наше приложение могло парсить json-формат
+app.use(express.json({ extended: true }));  // для того чтобы наше приложение могло парсить json-формат
 
 app.use('/api', router)  // слушаем маршруты
 
