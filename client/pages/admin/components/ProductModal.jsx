@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios'
+import Image from "next/image";
 
 const ProductModal = () => {
     const [categories, setCategories] = React.useState([])
@@ -41,10 +42,6 @@ const ProductModal = () => {
             .catch(error => console.log(error))
     }, [])
 
-    React.useEffect(() => {
-        axios.get(`${process.env.SERVER_URL}/product`)
-    })
-
     const addNewProduct = () => {
         axios.post(`${process.env.SERVER_URL}/product`, {name: name, price: price, categoryId: selectedItem})
             .then(res => setProducts([...products, res.data]))
@@ -63,7 +60,7 @@ const ProductModal = () => {
 
     const findCategory = (id) => {
         const item = categories.find(item => item.id === id)
-        return item.name
+        return item?.name
     }
 
     React.useEffect(() => {
@@ -127,7 +124,26 @@ const ProductModal = () => {
                             <button onClick={() => sendFile(product.id)}>Добавить изображение</button>
                         </div>
                         <div>
+                            {/*{product.images.length !== 0*/}
+                            {/*    ? product.images.map(item =>*/}
+                            {/*        <div className='relative'>*/}
+                            {/*            <Image*/}
+                            {/*                fill={true}*/}
+                            {/*                src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}*/}
+                            {/*                alt="no image"*/}
+                            {/*            />*/}
+                            {/*        </div>*/}
+                            {/*    )*/}
+                            {/*    : <p>Фотографий нет</p>*/}
+                            {/*}*/}
 
+                            <div className='relative'>
+                                <Image
+                                    fill={true}
+                                    src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}
+                                    alt="no image"
+                                />
+                            </div>
                         </div>
                         <button onClick={() => deleteProduct(product.id)}>delete</button>
                     </li>

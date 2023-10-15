@@ -42,7 +42,7 @@ class ProductImageController {
 
                 // сохраняем путь к файлу в базу данных
                 const productImage = await ProductImage.create({
-                    path: path.join(`media/images/${id}`, image.filename), // формируем путь к файлу
+                    path: path.join(`images/${id}`, image.filename), // формируем путь к файлу
                     productId: id
                 });
 

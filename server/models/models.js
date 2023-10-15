@@ -28,7 +28,7 @@ const ProductImage= sequelize.define('productImage', {
 Category.hasMany(Product)
 Product.belongsTo(Category)
 
-Product.hasMany(ProductImage)
+Product.hasMany(ProductImage, { as: 'images' })
 ProductImage.belongsTo(Product)
 
 
