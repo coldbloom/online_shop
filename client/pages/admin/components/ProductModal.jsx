@@ -124,26 +124,28 @@ const ProductModal = () => {
                             <button onClick={() => sendFile(product.id)}>Добавить изображение</button>
                         </div>
                         <div>
-                            {/*{product.images.length !== 0*/}
-                            {/*    ? product.images.map(item =>*/}
-                            {/*        <div className='relative'>*/}
-                            {/*            <Image*/}
-                            {/*                fill={true}*/}
-                            {/*                src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}*/}
-                            {/*                alt="no image"*/}
-                            {/*            />*/}
-                            {/*        </div>*/}
-                            {/*    )*/}
-                            {/*    : <p>Фотографий нет</p>*/}
-                            {/*}*/}
+                            {product.images.length !== 0
+                                ? product.images.map(item =>
+                                    <div className='relative'>
+                                        {/*<Image*/}
+                                        {/*    fill={true}*/}
+                                        {/*    src={`http://localhost:3031/${item}`}*/}
+                                        {/*    alt="no image"*/}
+                                        {/*/>*/}
+                                        <p>{item}</p>
+                                    </div>
+                                )
+                                : <p>Фотографий нет</p>
+                            }
 
-                            <div className='relative'>
-                                <Image
-                                    fill={true}
-                                    src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}
-                                    alt="no image"
-                                />
-                            </div>
+                            {/*<div className='relative'>*/}
+                            {/*    <Image*/}
+                            {/*        src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}*/}
+                            {/*        alt="no image"*/}
+                            {/*        width={50}*/}
+                            {/*        height={50}*/}
+                            {/*    />*/}
+                            {/*</div>*/}
                         </div>
                         <button onClick={() => deleteProduct(product.id)}>delete</button>
                     </li>

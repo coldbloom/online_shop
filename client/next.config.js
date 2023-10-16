@@ -4,6 +4,17 @@ const nextConfig = {
   env: {
     SERVER_URL: process.env.SERVER_URL
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3031',
+        pathname: '/images/**',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
+
