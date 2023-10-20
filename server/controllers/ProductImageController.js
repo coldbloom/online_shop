@@ -54,25 +54,19 @@ class ProductImageController {
         }
     }
 
-    async getAll(req, res, next) {
+    async delete(req, res, next) {
         try {
-            const { id } = req.params; // получаем id продукта из параметров запроса
+            const {id} = req.params;
 
-            const dir = `media/images/${id}`; // создаем путь к папке с id продукта
+            const productImage = await ProductImage.findByPk(id);
 
-            if (!fs.existsSync(dir)) { // проверяем, существует ли папка
-                return res.json([]); // если папки нет, то возвращаем пустой массив
+            console.log(`${id} - id продукта, ${productImage.productId} - id картинки которая принадлежит продукту`)
+
+            console.log(productImage, 'delete image');
+
+            if (!productImage) {
+                return next(ApiError.badRequest(`Image with ${id} not found`));
             }
-
-            const files = fs.readdirSync(dir); // получаем список файлов в папке
-
-            const images = files.map(file => {
-                return {
-                    path: path.join(dir, file), // формируем путь к файлу
-                }
-            });
-
-            res.json(images); // отправляем массив изображений в ответе
 
         } catch (e) {
             next(ApiError.badRequest(e.message))

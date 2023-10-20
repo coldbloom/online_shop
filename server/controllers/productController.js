@@ -19,7 +19,12 @@ class ProductController {
             });
 
             const responseData = products.map(product => {
-                const images = product.images.map(image => image.path); // Используем 'product.images'
+                const images = product.images.map(image => {
+                    return {
+                        path: image.path,
+                        id: image.id
+                    }
+                }); // Используем 'product.images'
                 return {
                     id: product.id,
                     name: product.name,

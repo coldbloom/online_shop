@@ -21,11 +21,26 @@ const ProductModal = () => {
                 headers: {
                     'content-type': 'multipart/form-data'
                 }
-            })
+            }).then(res => {
+                const currentProductId = res.data.productId;
+                const newImage = { id: res.data.id, path: res.data.path };
+                const updateProducts = [...products];
+                const currentProduct = updateProducts.find(item => item.id === currentProductId);
+                currentProduct.images.push(newImage);
+                setProducts(updateProducts);
+                console.log('Изображение добавлено')
+                console.log(products, ' - данные о продукте')
+            });
         } catch (error) {
             console.log(error)
         }
     }, [img])
+
+    const deleteImage = (imageId) => {
+        axios.delete(`${process.env.SERVER_URL}/image/${imageId}`)
+            .then(() => {})
+            .catch(() => {})
+    }
 
     React.useEffect(() => {
         axios.get(`${process.env.SERVER_URL}/category`)
@@ -117,35 +132,26 @@ const ProductModal = () => {
                             <p>{`наименование: ${product.name}`}</p>
                             <p>{`категория: ${findCategory(product.categoryId)}`}</p>
                             <p>{`цена: ${product.price}`}</p>
-                            {console.log(product.categoryId)}
                         </div>
                         <div>
                             <input type="file" onChange={e => setImg(e.target.files[0])}/>
                             <button onClick={() => sendFile(product.id)}>Добавить изображение</button>
                         </div>
-                        <div>
+                        <div className='flex flex-row'>
                             {product.images.length !== 0
-                                ? product.images.map(item =>
-                                    <div className='relative'>
-                                        {/*<Image*/}
-                                        {/*    fill={true}*/}
-                                        {/*    src={`http://localhost:3031/${item}`}*/}
-                                        {/*    alt="no image"*/}
-                                        {/*/>*/}
-                                        <p>{item}</p>
+                                ? product.images.map((image) =>
+                                    <div key={image.id}>
+                                        <Image
+                                            src={`http://localhost:3031/${image.path}`}
+                                            alt="no image"
+                                            width={100}
+                                            height={100}
+                                        />
+                                        <button onClick={() => deleteImage(image.id)}>Удалить изображение</button>
                                     </div>
                                 )
                                 : <p>Фотографий нет</p>
                             }
-
-                            {/*<div className='relative'>*/}
-                            {/*    <Image*/}
-                            {/*        src={`http://localhost:3031/images/20/1697376230682-76DC15A9-40B1-483B-8EAB-08F80949C712.jpg`}*/}
-                            {/*        alt="no image"*/}
-                            {/*        width={50}*/}
-                            {/*        height={50}*/}
-                            {/*    />*/}
-                            {/*</div>*/}
                         </div>
                         <button onClick={() => deleteProduct(product.id)}>delete</button>
                     </li>
