@@ -60,14 +60,28 @@ class ProductImageController {
 
             const productImage = await ProductImage.findByPk(id);
 
-            console.log(`${id} - id продукта, ${productImage.productId} - id картинки которая принадлежит продукту`)
-
-            console.log(productImage, 'delete image');
-
             if (!productImage) {
                 return next(ApiError.badRequest(`Image with ${id} not found`));
             }
 
+            const imagePath = path.join('media', productImage.path);
+
+            //удаляем файл из папки
+            fs.unlink(imagePath, (error) => {
+                if (error) {
+                    return next(ApiError.internal(error.message));
+                }
+
+                //удаляем запись о файле из базы данных
+                ProductImage.destroy({ where: {id} })
+                    .then(() => {
+                        //res.sendStatus(204); // Возвращаем статус 204 No Content в случае успеха
+                        return res.status(200).json({ message: "Изображение успешно удалено" });
+                    })
+                    .catch((error) => {
+                        next(ApiError.internal(error.message));
+                    })
+            });
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }

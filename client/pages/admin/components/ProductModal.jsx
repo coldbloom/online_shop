@@ -36,10 +36,27 @@ const ProductModal = () => {
         }
     }, [img])
 
-    const deleteImage = (imageId) => {
+    const deleteImage = (imageId, productId) => {
         axios.delete(`${process.env.SERVER_URL}/image/${imageId}`)
-            .then(() => {})
-            .catch(() => {})
+            .then(() => {
+                const updateProducts = products.map(product => {
+                    if (product.id === productId) {
+                        if (product.images && product.images.length > 0) {
+                            const updateImages = product.images.filter(
+                                image => image.id !== imageId
+                            );
+                            // мутируем images - удаляя фотографию и возвращаем мутированный объект в массив updateProducts
+                            return { ...product, images: updateImages}
+                        }
+                    }
+                    // если product.id === productId возвращаем product без изменений в новый массив updateProducts
+                    return product;
+                })
+                setProducts(updateProducts);
+            })
+            .catch((error) => {
+                console.log(`Произошла ошибка - ${error.message}`)
+            })
     }
 
     React.useEffect(() => {
@@ -147,7 +164,7 @@ const ProductModal = () => {
                                             width={100}
                                             height={100}
                                         />
-                                        <button onClick={() => deleteImage(image.id)}>Удалить изображение</button>
+                                        <button onClick={() => deleteImage(image.id, product.id)}>Удалить изображение</button>
                                     </div>
                                 )
                                 : <p>Фотографий нет</p>
