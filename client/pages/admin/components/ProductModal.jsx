@@ -146,6 +146,7 @@ const ProductModal = () => {
                     >
                         <p>{idx})</p>
                         <div>
+                            <p>{`id в базе ${product.id}`}</p>
                             <p>{`наименование: ${product.name}`}</p>
                             <p>{`категория: ${findCategory(product.categoryId)}`}</p>
                             <p>{`цена: ${product.price}`}</p>
