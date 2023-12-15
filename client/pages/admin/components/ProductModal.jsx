@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios'
 import Image from "next/image";
 
-const ProductModal = () => {
+const   ProductModal = () => {
     const [categories, setCategories] = React.useState([])
     const [selectedItem, setSelectedItem] = React.useState('')
     const [products, setProducts] = React.useState([])

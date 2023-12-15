@@ -5,7 +5,7 @@ const CategoryModal = () => {
     const [name, setName] = React.useState('')
     const [categories, setCategories] = React.useState([])
 
-    const addNewCategory = () => {
+        const addNewCategory = () => {
         axios.post(`${process.env.SERVER_URL}/category`, {"name": name})
             .then(res => {
                 setCategories([...categories, res.data]);
