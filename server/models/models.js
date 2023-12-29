@@ -18,12 +18,14 @@ const Product = sequelize.define('product', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
     price: {type: DataTypes.INTEGER, allowNull: false},
+    about: {type: DataTypes.STRING},
 })
 
-    const ProductImage= sequelize.define('productImage', {
-        id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-        path: {type: DataTypes.STRING, unique: true, allowNull: false},
-    })
+const ProductImage= sequelize.define('productImage', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    path: {type: DataTypes.STRING, unique: true, allowNull: false},
+    order: {type: DataTypes.INTEGER}
+})
 
 Category.hasMany(Product)
 Product.belongsTo(Category)
