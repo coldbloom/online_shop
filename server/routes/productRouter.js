@@ -14,4 +14,6 @@ router.delete('/:id', productController.delete)
 
 router.post('/:id/uploadImage', productImageController.create)
 
+router.post('/check', productController.checkName)
+
 module.exports = router

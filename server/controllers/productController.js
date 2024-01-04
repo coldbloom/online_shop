@@ -20,6 +20,10 @@ class ProductController {
                 }
 
                 const {name, price, categoryId, about} = req.body;
+                const existingProduct = await Product.findOne({ where: { name: name } });
+                if (existingProduct) {
+                    return res.status(400).json({ message: 'Имя товара уже существует' });
+                }
                 const product = await Product.create({name, price, categoryId, about})
                 const productId = product.id;
 
@@ -41,22 +45,31 @@ class ProductController {
                         } else {
                             await ProductImage.create({
                                 path: `images/${productId}/${file.originalname}`,
+                                order: idx + 1,
                                 productId: productId,
-                                order: idx + 1
                             });
                         }
                     });
                 }));
 
-                const productImage = await ProductImage.findOne({
-                    where: {
-                        id: productId
+                const imagesArray = images.map((image, idx) => {
+                    return {
+                        path: `images/${productId}/${image.originalname}`,
+                        productId: productId,
+                        order: idx + 1
                     }
-                });
+                })
 
-                console.log(productImage);
+                const resData = {
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    categoryId: product.categoryId,
+                    about: product.about,
+                    images: imagesArray
+                }
 
-                return res.json(product);
+                return res.json(resData);
             });
         } catch (e) {
             next(ApiError.badRequest(e.message));
@@ -118,6 +131,26 @@ class ProductController {
             // Удаление папки и ее содержимого
             await fsExtra.remove(imagesFolderPath);
             return res.json({ message: 'Product deleted successfully'})
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
+        }
+    }
+
+    async checkName(req, res, next) {
+        try {
+            let result = false
+            const { name } = req.body;
+
+            const product = await Product.findOne({ where: { name: name } });
+            if (product) {
+                console.log(product); // Вывод найденного продукта
+                result = false
+            } else {
+                console.log('Продукт не найден');
+                result = true
+            }
+
+            return res.json(result)
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }
