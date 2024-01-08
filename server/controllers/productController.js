@@ -8,8 +8,15 @@ const fs = require("fs");
 const fsExtra = require("fs-extra")
 const path = require('path');
 
-const upload = multer({ storage: memoryStorage }); // указывается путь для сохранения файлов в буфферной зоне
+const getDifference = (arr1, arr2) => {
+    return arr1.filter(item => !arr2.includes(item))
+}
 
+const getImageName = (path) => {
+    return path.substring(path.lastIndexOf('/') + 1)
+}
+
+const upload = multer({ storage: memoryStorage }); // указывается путь для сохранения файлов в буфферной зоне
 class ProductController {
 
     async create(req, res, next) {
@@ -73,6 +80,71 @@ class ProductController {
             });
         } catch (e) {
             next(ApiError.badRequest(e.message));
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+            upload.any()(req, res, async function (err) {
+                if (err) {
+                    return next(ApiError.badRequest(err.message));
+                }
+
+                const updatedFields = req.body;
+                const newImages = req.files;
+
+                let allImagesInBD = []
+
+                let actualOldImages = [];
+                let deletedImages = [];
+
+                for (const key in updatedFields) {
+                    if (Object.prototype.hasOwnProperty.call(updatedFields, key)) {
+                        const obj = JSON.parse(updatedFields[key]);
+                        actualOldImages.push(obj.name);
+                    }
+                }
+
+                const {id} = req.params;
+                const imagesFolderPath = `media/images/${id}`;
+                const product = await Product.findByPk(id, {
+                    include: 'images' // Включаем связанные записи из таблицы ProductImage
+                });
+                if (!product) {
+                    return res.status(401).json({ error: 'Product not found' });
+                }
+
+                allImagesInBD = product.images.map(item => {
+                    return {
+                        name: getImageName(item.dataValues.path),
+                        id: item.dataValues.id,
+                        order: item.dataValues.order,
+                    }
+                })
+                console.log(allImagesInBD, ' = allImagesInBD Что лежит в массиве id и name всех фотогравий из бд')
+
+                fs.readdir(imagesFolderPath, (err, files) => {
+                    if (err) {
+                        console.error('Ошибка чтения содержимого директории:', err);
+                    } else {
+                        const imageNames = files; // Добавляем все файлы в массив imageNames
+                        console.log(imageNames, ` = imageNames Наименования изображений, которые хранятся в папке ${id}`); // Полученные названия файлов добавляются в массив imageNames
+
+                        deletedImages = getDifference(imageNames, actualOldImages)
+                        console.log(deletedImages, ' изображения которые нужно удалить')
+                    }
+                })
+
+                console.log(' patch update product request')
+                console.log(updatedFields, ' = req.body')
+                console.log(newImages, ' = req.files')
+
+
+
+                return res.json('update product')
+            })
+        } catch (e) {
+            next(ApiError.badRequest(e.message))
         }
     }
     async getAll(req ,res, next) {
