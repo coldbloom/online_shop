@@ -90,23 +90,7 @@ class ProductController {
                     return next(ApiError.badRequest(err.message));
                 }
 
-                const updatedFields = req.body;
-                const newImages = req.files;
-
-                let allImagesInBD = []
-
-                let actualOldImages = [];
-                let deletedImages = [];
-
-                for (const key in updatedFields) {
-                    if (Object.prototype.hasOwnProperty.call(updatedFields, key)) {
-                        const obj = JSON.parse(updatedFields[key]);
-                        actualOldImages.push(obj.name);
-                    }
-                }
-
                 const {id} = req.params;
-                const imagesFolderPath = `media/images/${id}`;
                 const product = await Product.findByPk(id, {
                     include: 'images' // Включаем связанные записи из таблицы ProductImage
                 });
@@ -114,29 +98,71 @@ class ProductController {
                     return res.status(401).json({ error: 'Product not found' });
                 }
 
-                allImagesInBD = product.images.map(item => {
+                const allImagesFromDB = product.images.map(item => {
                     return {
                         name: getImageName(item.dataValues.path),
                         id: item.dataValues.id,
                         order: item.dataValues.order,
                     }
                 })
-                console.log(allImagesInBD, ' = allImagesInBD Что лежит в массиве id и name всех фотогравий из бд')
 
-                fs.readdir(imagesFolderPath, (err, files) => {
-                    if (err) {
-                        console.error('Ошибка чтения содержимого директории:', err);
-                    } else {
-                        const imageNames = files; // Добавляем все файлы в массив imageNames
-                        console.log(imageNames, ` = imageNames Наименования изображений, которые хранятся в папке ${id}`); // Полученные названия файлов добавляются в массив imageNames
+                const requestData = req.body;
+                const updatedImagesNames = JSON.parse(requestData.oldImages).map(item => item.name)
+                const deletedImages = allImagesFromDB.filter(item => !updatedImagesNames.includes(item.name))
+                const newImages = req.files;
 
-                        deletedImages = getDifference(imageNames, actualOldImages)
-                        console.log(deletedImages, ' изображения которые нужно удалить')
+                if (deletedImages.length !== 0) {
+                    for (let i = 0; i < deletedImages.length; i++) {
+                        const { name: imageName, id: imageId } = deletedImages[i]
+                        //const imagePath2 = path.join(`media/images/${id}/`, imageName)
+                        const imagePath = `media/images/${id}/${deletedImages[i].name}`
+
+                        //удаляем файл из папки
+                        fs.unlink(imagePath, (error) => {
+                            if (error) {
+                                return next(ApiError.internal(error.message));
+                            }
+
+                            //удаляем запись о файле из базы данных
+                            ProductImage.destroy({ where: {id: imageId} })
+                                .then(() => {
+                                    console.log(`Изображение ${imageName} удалено; Запись ProductImage в базе данных с id = ${imageId} удалено!`)
+                                })
+                                .catch((error) => {
+                                    next(ApiError.internal(error.message));
+                                })
+                        });
                     }
-                })
+                }
+
+                if (requestData.oldImages.length !== 0) {
+                    const updateImages = JSON.parse(requestData.oldImages);
+                    console.log('Здесь будут изменен порядок order изображений')
+                    for (let i = 0; i < updateImages.length; i++) {
+                        const { name: imageName, id: imageId, order } = updateImages[i]
+
+                        // Найти запись productImage по идентификатору
+                        const productImage = await ProductImage.findByPk(imageId);
+
+                        if (productImage) {
+                            // Изменить поле order на новое значение
+                            productImage.order = order;
+
+                            await productImage.save();
+                        } else {
+                            console.log(`ProductImage с ${imageId} не найден в Базе Данных`)
+                            return next(ApiError.internal(`ProductImage с ${imageId} не найден в Базе Данных`));
+                        }
+                    }
+                }
+
+
+                console.log(allImagesFromDB, ' = allImagesFromDB Что лежит в массиве id и name всех фотогравий из бд')
+
 
                 console.log(' patch update product request')
-                console.log(updatedFields, ' = req.body')
+                console.log(requestData, ' = requestData = req.body')
+                //console.log(updatedImagesNames, ' = массив имен updatedImages')
                 console.log(newImages, ' = req.files')
 
 
