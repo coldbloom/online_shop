@@ -135,9 +135,9 @@ class ProductController {
                     }
                 }
 
+                // если порядок изображений, запись которых уже есть в базе и файл которых лежит в папке media/images
                 if (requestData.oldImages.length !== 0) {
                     const updateImages = JSON.parse(requestData.oldImages);
-                    console.log('Здесь будут изменен порядок order изображений')
                     for (let i = 0; i < updateImages.length; i++) {
                         const { name: imageName, id: imageId, order } = updateImages[i]
 
@@ -156,13 +156,37 @@ class ProductController {
                     }
                 }
 
+                // если пользователь добавил новые изображения в req.files
+                if (newImages.length !== 0) {
+                    const dir = `media/images/${id}`
+
+                    if (!fs.existsSync(dir)) {
+                        return next(ApiError.internal(`Папки с ${id} продукта не найдено media/images`));
+                    }
+
+                    await Promise.all(newImages.map(async (file, idx) => {
+                        const imagePath = `${dir}/${file.originalname}`
+                        const order = file.fieldname[file.fieldname.lastIndexOf('=') + 1]
+
+                        fs.writeFile(imagePath, file.buffer, { encoding: 'binary' }, async (err) => {
+                            if (err) {
+                                console.error(err);
+                            } else {
+                                await ProductImage.create({
+                                    path: `images/${id}/${file.originalname}`,
+                                    order: order,
+                                    productId: id,
+                                });
+                            }
+                        });
+                    }))
+                }
+
 
                 console.log(allImagesFromDB, ' = allImagesFromDB Что лежит в массиве id и name всех фотогравий из бд')
 
-
                 console.log(' patch update product request')
                 console.log(requestData, ' = requestData = req.body')
-                //console.log(updatedImagesNames, ' = массив имен updatedImages')
                 console.log(newImages, ' = req.files')
 
 
