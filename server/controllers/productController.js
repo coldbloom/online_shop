@@ -40,8 +40,6 @@ class ProductController {
 
                 const images = req.files;
 
-                console.log(images, 'сами файлы')
-
                 const dir = `media/images/${productId}`;
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir)
@@ -116,7 +114,6 @@ class ProductController {
 
                 if (Object.keys(requestData).includes('oldImages')) {
                     const updatedImagesNames = JSON.parse(requestData.oldImages).map(item => item.name)
-                    console.log(requestData.oldImages, ' Все изображения (не файлы)')
                     // собираем ответ из актуальных изображений из req.data
                     resDataImages = JSON.parse(requestData.oldImages).map(image => {
                         return {
@@ -184,7 +181,6 @@ class ProductController {
 
                 // если пользователь добавил новые изображения в req.files
                 const newImages = req.files;
-                console.log(newImages, ' Все изображения (файлы)')
 
                 if (newImages.length !== 0) {
                     const dir = `media/images/${id}`
@@ -231,19 +227,15 @@ class ProductController {
                     fields.forEach(field => {
                         switch (field) {
                             case 'name':
-                                console.log(`name = ${requestData.field}`)
                                 product.name = requestData.name
                                 break;
                             case 'about':
-                                console.log(`about = ${requestData.field}`)
                                 product.about = requestData.about
                                 break;
                             case 'price':
-                                console.log(`price = ${requestData.field}`)
                                 product.price = requestData.price
                                 break;
                             case 'categoryId':
-                                console.log(`categoryId = ${requestData.field}`)
                                 product.categoryId = requestData.categoryId
                                 break;
                         }
@@ -257,8 +249,6 @@ class ProductController {
                         console.error('Ошибка при сохранении изменений в базе данных:', error);
                     }
                 }
-
-                console.log(product.images, ' изображения после редактирования - АКТУАЛЬНОЕ !!!')
 
                 const resData = {
                     id: Number(id),
@@ -342,7 +332,6 @@ class ProductController {
 
             const product = await Product.findOne({ where: { name: name } });
             if (product) {
-                console.log(product); // Вывод найденного продукта
                 result = false
             } else {
                 console.log('Продукт не найден');
