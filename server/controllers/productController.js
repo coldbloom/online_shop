@@ -266,28 +266,68 @@ class ProductController {
     }
     async getAll(req ,res, next) {
         try {
-            const products = await Product.findAll({
-                include: 'images' // Используем имя связи 'images'
-            });
+            const { page = 1, limit = 20, categoryId, sort } = req.query;
+            const offset = (page - 1) * limit;
 
-            const responseData = products.map(product => {
-                const images = product.images.map(image => {
-                    return {
-                        path: image.path,
-                        id: image.id,
-                        order: image.order
-                    }
-                }); // Используем 'product.images'
-                return {
+            const filterOptions = {
+                offset: offset,
+                limit: limit,
+                include: 'images'
+            };
+
+            if (sort) {
+                if (sort === 'desc') {
+                    filterOptions.order = [['price', 'DESC']];
+                } else if (sort === 'asc') {
+                    filterOptions.order = [['price', 'ASC']];
+                }
+            }
+
+            if (categoryId) {
+                filterOptions.where = { categoryId: categoryId };
+            }
+
+            const products = await Product.findAndCountAll(filterOptions);
+            const response = {
+                totalCount: products.count,
+                totalPages: Math.ceil(products.count / limit),
+                currentPage: page,
+                products: products.rows.map(product => ({
                     id: product.id,
                     name: product.name,
                     price: product.price,
                     categoryId: product.categoryId,
                     about: product.about,
-                    images: images
-                }
-            })
-            return res.json(responseData);
+                    images: product.images.map(image => ({
+                        path: image.path,
+                        id: image.id,
+                        order: image.order
+                    }))
+                }))
+            };
+
+            // const products = await Product.findAll({
+            //     include: 'images' // Используем имя связи 'images'
+            // });
+            //
+            // const responseData = products.map(product => {
+            //     const images = product.images.map(image => {
+            //         return {
+            //             path: image.path,
+            //             id: image.id,
+            //             order: image.order
+            //         }
+            //     }); // Используем 'product.images'
+            //     return {
+            //         id: product.id,
+            //         name: product.name,
+            //         price: product.price,
+            //         categoryId: product.categoryId,
+            //         about: product.about,
+            //         images: images
+            //     }
+            // })
+            return res.json(response);
             // const product = await Product.findAll()
             // return res.json(product)
         } catch (e) {
