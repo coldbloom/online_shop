@@ -4,7 +4,12 @@ import {Provider} from "react-redux";
 import {store} from "@/store";
 
 
-export default function App({ Component, pageProps }) {
-  const Layout = Component.layout || MainLayout
-  return <Provider store={store}><Layout><Component {...pageProps} /></Layout></Provider>
+export default function App({Component, pageProps}) {
+    const Layout = Component.layout || MainLayout
+    return (
+        <Provider store={store}>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </Provider>)
 }

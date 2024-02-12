@@ -29,12 +29,14 @@ const verifyRefreshTokenMiddleware = (req, res, next) => {
 
     const refreshToken = req.headers.cookie.split("=")[1];
 
+    console.log(refreshToken, ' = сам токен refreshToken')
+
     if (!refreshToken) {
         return res.sendStatus(401);
     }
 
     try {
-        const decoded = jwt.verify(refreshToken, signatureRefresh);
+        const decoded = jwt.verify(refreshToken.split(';')[0], signatureRefresh);
         req.user = decoded;
     } catch (err) {
         return res.sendStatus(401);

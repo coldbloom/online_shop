@@ -288,9 +288,10 @@ class ProductController {
             }
 
             const products = await Product.findAndCountAll(filterOptions);
+            const totalCount = products.rows.length
             const response = {
-                totalCount: products.count,
-                totalPages: Math.ceil(products.count / limit),
+                totalCount: totalCount,
+                totalPages: Math.ceil(totalCount / limit),
                 currentPage: page,
                 products: products.rows.map(product => ({
                     id: product.id,
@@ -306,30 +307,7 @@ class ProductController {
                 }))
             };
 
-            // const products = await Product.findAll({
-            //     include: 'images' // Используем имя связи 'images'
-            // });
-            //
-            // const responseData = products.map(product => {
-            //     const images = product.images.map(image => {
-            //         return {
-            //             path: image.path,
-            //             id: image.id,
-            //             order: image.order
-            //         }
-            //     }); // Используем 'product.images'
-            //     return {
-            //         id: product.id,
-            //         name: product.name,
-            //         price: product.price,
-            //         categoryId: product.categoryId,
-            //         about: product.about,
-            //         images: images
-            //     }
-            // })
             return res.json(response);
-            // const product = await Product.findAll()
-            // return res.json(product)
         } catch (e) {
             next(ApiError.badRequest(e.message))
         }
