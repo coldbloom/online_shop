@@ -49,7 +49,7 @@ const ProductSize = sequelize.define('productSize', {
 Category.hasMany(Product)
 Product.belongsTo(Category)
 
-Product.hasMany(ProductImage, { as: 'images' })
+Product.hasMany(ProductImage, { as: 'images' }) // параметр as используется для определения псевдонима (алиаса) для отношений
 ProductImage.belongsTo(Product)
 
 Brand.hasMany(Product)
@@ -61,12 +61,20 @@ Product.belongsTo(Type)
 Type.hasMany(Size)
 Size.belongsTo(Type)
 
+Product.hasMany(ProductSize)
+ProductSize.belongsTo(Product)
 
+Size.hasMany(ProductSize)
+ProductSize.belongsTo(Size)
 
 
 module.exports = {
     User,
     Category,
     Product,
-    ProductImage
+    ProductImage,
+    Brand,
+    Type,
+    Size,
+    ProductSize,
 }
