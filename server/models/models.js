@@ -36,6 +36,16 @@ const Type = sequelize.define('type', {
     name: {type: DataTypes.STRING, unique: true, allowNull: false},
 })
 
+const Size = sequelize.define('size', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    name: {type: DataTypes.STRING, unique: true, allowNull: false},
+})
+
+const ProductSize = sequelize.define('productSize', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    available: {type: DataTypes.BOOLEAN, allowNull: false}
+})
+
 Category.hasMany(Product)
 Product.belongsTo(Category)
 
@@ -47,6 +57,11 @@ Product.belongsTo(Brand)
 
 Type.hasMany(Product)
 Product.belongsTo(Type)
+
+Type.hasMany(Size)
+Size.belongsTo(Type)
+
+
 
 
 module.exports = {
