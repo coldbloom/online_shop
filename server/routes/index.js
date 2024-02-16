@@ -11,6 +11,6 @@ router.use('/admin', adminAuthRouter)
 router.use('/category', categoryRouter)
 router.use('/product', productRouter)
 router.use('/image', imageRouter)
-router.use('/brands', brandsRouter)
+router.use('/brand', brandsRouter)
 
 module.exports = router
