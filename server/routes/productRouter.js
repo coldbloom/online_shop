@@ -1,7 +1,7 @@
 const Router = require('express')
 const router = new Router()
 const productController = require('../controllers/productController')
-const productImageController = require('../controllers/ProductImageController')
+const productImageController = require('../controllers/productImageController')
 
 const bodyParser = require('body-parser');
 

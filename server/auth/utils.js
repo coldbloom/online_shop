@@ -27,7 +27,7 @@ const verifyAuthorizationMiddleware = (req, res, next) => {
 
 const verifyRefreshTokenMiddleware = (req, res, next) => {
 
-    const refreshToken = req.headers.cookie.split("=")[1];
+    const refreshToken = req.headers.cookie.split("=")[1]; // версия для office pc
 
     console.log(refreshToken, ' = сам токен refreshToken')
 

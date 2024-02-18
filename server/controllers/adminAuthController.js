@@ -50,7 +50,7 @@ class AdminAuthController {
     }
 
     async refresh(req, res, next){
-        console.log('refresh token ?/?', req.user.log)
+        console.log('refresh token ?/?', req.user.login)
         const { accessToken, refreshToken } = getTokens(req.user.login);
 
         res.setHeader(
