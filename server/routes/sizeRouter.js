@@ -5,7 +5,6 @@ const {verifyAuthorizationMiddleware} = require('../auth/utils')
 
 router.post('/', verifyAuthorizationMiddleware, sizeController.create)
 router.get('/', sizeController.getAll)
-router.delete('/', verifyAuthorizationMiddleware, sizeController.delete)
-router.put('/', verifyAuthorizationMiddleware, sizeController.put)
+router.delete('/:id', verifyAuthorizationMiddleware, sizeController.delete)
 
 module.exports = router

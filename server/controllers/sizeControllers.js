@@ -6,7 +6,11 @@ class SizeControllers {
         try {
             const { name, typeId } = req.body;
             const newSize = await Size.create({ name, typeId });
-            return res.json(newSize);
+            return res.json({
+                id: newSize.id,
+                name: newSize.name,
+                typeId: newSize.typeId
+            });
         } catch (e) {
             ApiError.badRequest(e.message);
         }
@@ -29,7 +33,7 @@ class SizeControllers {
 
     async delete(req, res, next) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
 
             const size = await Size.findByPk(id);
 
